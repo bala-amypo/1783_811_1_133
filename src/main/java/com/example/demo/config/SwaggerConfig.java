@@ -1,7 +1,4 @@
 
-727824TUCS456 VISWA M S
-10:10 AM (42 minutes ago)
-to Srihari
 
 package com.example.demo.config;
 
