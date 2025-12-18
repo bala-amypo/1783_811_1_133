@@ -1,24 +1,33 @@
-
 package com.example.demo.service;
+
+import com.example.demo.entity.Store;
+import com.example.demo.repository.StoreRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import com.example.demo.entity.StudentEntity;
+@Service
+public class StoreService {
 
-public interface StudentService {
+    private final StoreRepository storeRepository;
 
-    public StudentEntity addStudents(StudentEntity student);
+    public StoreService(StoreRepository storeRepository) {
+        this.storeRepository = storeRepository;
+    }
 
-    public List<StudentEntity> getStudents();
+    public Store createStore(Store store) {
+        if (storeRepository.findByStoreName(store.getStoreName()) != null) {
+            throw new IllegalArgumentException("Store name already exists");
+        }
+        return storeRepository.save(store);
+    }
 
-    public StudentEntity getStudentById(Long id);
+    public Store getStoreById(Long id) {
+        return storeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("not found"));
+    }
 
-    public void deleteStudentById(Long id);
-
+    public List<Store> getAllStores() {
+        return storeRepository.findAll();
+    }
 }
-
-
-
-
-
-
