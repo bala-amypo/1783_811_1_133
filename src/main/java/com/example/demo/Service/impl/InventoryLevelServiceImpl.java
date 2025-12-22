@@ -1,33 +1,41 @@
-package com.example.demo.serviceimpl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.InventoryLevel;
-import com.example.demo.repository.InventoryLevelRepository;
+import com.example.demo.Entity.InventoryLevel;
+import com.example.demo.Repository.InventoryLevelRepository;
 import com.example.demo.service.InventoryLevelService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class InventoryLevelServiceImpl implements InventoryLevelService
-{
-    private final InventoryLevelRepository inventoryLevelRepository;
+public class InventoryLevelServiceImpl implements InventoryLevelService {
 
-    public InventoryLevelServiceImpl(InventoryLevelRepository inventoryLevelRepository)
-    {
-        this.inventoryLevelRepository = inventoryLevelRepository;
+    private final InventoryLevelRepository repository;
+
+    @Autowired
+    public InventoryLevelServiceImpl(InventoryLevelRepository repository) {
+        this.repository = repository;
     }
 
-    public InventoryLevel createInventory(InventoryLevel inventoryLevel)
-    {
-        return inventoryLevelRepository.save(inventoryLevel);
+    @Override
+    public List<InventoryLevel> getAllInventoryLevels() {
+        return repository.findAll();
     }
 
-    public InventoryLevel getInventoryById(Long id)
-    {
-        return inventoryLevelRepository.findById(id).orElse(null);
+    @Override
+    public Optional<InventoryLevel> getInventoryLevelById(Long id) {
+        return repository.findById(id);
     }
 
-    public List<InventoryLevel> getAllInventories()
-    {
-        return inventoryLevelRepository.findAll();
+    @Override
+    public InventoryLevel saveInventoryLevel(InventoryLevel inventoryLevel) {
+        return repository.save(inventoryLevel);
+    }
+
+    @Override
+    public void deleteInventoryLevel(Long id) {
+        repository.deleteById(id);
     }
 }

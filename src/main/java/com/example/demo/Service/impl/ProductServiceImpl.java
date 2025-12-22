@@ -1,33 +1,41 @@
-package com.example.demo.serviceimpl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.Product;
-import com.example.demo.repository.ProductRepository;
+import com.example.demo.Entity.Product;
+import com.example.demo.Repository.ProductRepository;
 import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ProductServiceImpl implements ProductService
-{
-    private final ProductRepository productRepository;
+public class ProductServiceImpl implements ProductService {
 
-    public ProductServiceImpl(ProductRepository productRepository)
-    {
-        this.productRepository = productRepository;
+    private final ProductRepository repository;
+
+    @Autowired
+    public ProductServiceImpl(ProductRepository repository) {
+        this.repository = repository;
     }
 
-    public Product createProduct(Product product)
-    {
-        return productRepository.save(product);
+    @Override
+    public List<Product> getAllProducts() {
+        return repository.findAll();
     }
 
-    public Product getProductById(Long id)
-    {
-        return productRepository.findById(id).orElse(null);
+    @Override
+    public Optional<Product> getProductById(Long id) {
+        return repository.findById(id);
     }
 
-    public List<Product> getAllProducts()
-    {
-        return productRepository.findAll();
+    @Override
+    public Product saveProduct(Product product) {
+        return repository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        repository.deleteById(id);
     }
 }

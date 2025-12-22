@@ -1,33 +1,41 @@
-package com.example.demo.serviceimpl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.Store;
-import com.example.demo.repository.StoreRepository;
+import com.example.demo.Entity.Store;
+import com.example.demo.Repository.StoreRepository;
 import com.example.demo.service.StoreService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class StoreServiceImpl implements StoreService
-{
-    private final StoreRepository storeRepository;
+public class StoreServiceImpl implements StoreService {
 
-    public StoreServiceImpl(StoreRepository storeRepository)
-    {
-        this.storeRepository = storeRepository;
+    private final StoreRepository repository;
+
+    @Autowired
+    public StoreServiceImpl(StoreRepository repository) {
+        this.repository = repository;
     }
 
-    public Store createStore(Store store)
-    {
-        return storeRepository.save(store);
+    @Override
+    public List<Store> getAllStores() {
+        return repository.findAll();
     }
 
-    public Store getStoreById(Long id)
-    {
-        return storeRepository.findById(id).orElse(null);
+    @Override
+    public Optional<Store> getStoreById(Long id) {
+        return repository.findById(id);
     }
 
-    public List<Store> getAllStores()
-    {
-        return storeRepository.findAll();
+    @Override
+    public Store saveStore(Store store) {
+        return repository.save(store);
+    }
+
+    @Override
+    public void deleteStore(Long id) {
+        repository.deleteById(id);
     }
 }
