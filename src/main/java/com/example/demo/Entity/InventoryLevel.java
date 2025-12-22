@@ -1,62 +1,27 @@
-package com.example.demo.entity;
+package com.example.demo.Entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "inventory_levels")
-public class InventoryLevel
-{
+public class InventoryLevel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
-    private Store store;
+    private String storeName;
+    private String productName;
+    private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    private Integer quantity;
+    public String getStoreName() { return storeName; }
+    public void setStoreName(String storeName) { this.storeName = storeName; }
 
-    public Long getId()
-    {
-        return id;
-    }
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public Store getStore()
-    {
-        return store;
-    }
-
-    public void setStore(Store store)
-    {
-        this.store = store;
-    }
-
-    public Product getProduct()
-    {
-        return product;
-    }
-
-    public void setProduct(Product product)
-    {
-        this.product = product;
-    }
-
-    public Integer getQuantity()
-    {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity)
-    {
-        this.quantity = quantity;
-    }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 }

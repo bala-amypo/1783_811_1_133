@@ -1,26 +1,23 @@
-package com.example.demo.Controller;
+package com.example.demo.Entity;
 
-import com.example.demo.Entity.DemandForecast;
-import com.example.demo.Repository.DemandForecastRepository;
-import org.springframework.web.bind.annotation.*;
+import jakarta.persistence.*;
 
-@RestController
-@RequestMapping("/forecast")
-public class DemandForecastController {
+@Entity
+public class DemandForecast {
 
-    private final DemandForecastRepository repo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public DemandForecastController(DemandForecastRepository repo) {
-        this.repo = repo;
-    }
+    private String productName;
+    private int forecastQuantity;
 
-    @PostMapping
-    public DemandForecast save(@RequestBody DemandForecast forecast) {
-        return repo.save(forecast);
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @GetMapping("/{id}")
-    public DemandForecast get(@PathVariable Long id) {
-        return repo.findById(id).orElse(null);
-    }
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
+
+    public int getForecastQuantity() { return forecastQuantity; }
+    public void setForecastQuantity(int forecastQuantity) { this.forecastQuantity = forecastQuantity; }
 }

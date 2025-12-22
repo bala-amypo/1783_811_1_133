@@ -1,31 +1,9 @@
-package com.example.demo.serviceimpl;
+package com.example.demo.Repository;
 
-import com.example.demo.entity.InventoryLevel;
-import com.example.demo.repository.InventoryLevelRepository;
-import com.example.demo.service.DemandForecastService;
-import org.springframework.stereotype.Service;
+import com.example.demo.Entity.DemandForecast;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Service
-public class DemandForecastServiceImpl implements DemandForecastService
+public interface DemandForecastRepository
+        extends JpaRepository<DemandForecast, Long>
 {
-    private final InventoryLevelRepository inventoryLevelRepository;
-
-    public DemandForecastServiceImpl(InventoryLevelRepository inventoryLevelRepository)
-    {
-        this.inventoryLevelRepository = inventoryLevelRepository;
-    }
-
-    @Override
-    public int getForecast(Long storeId, Long productId)
-    {
-        InventoryLevel inventory =
-                inventoryLevelRepository.findByStoreIdAndProductId(storeId, productId);
-
-        if (inventory == null)
-        {
-            return 0;
-        }
-
-        return (int) (inventory.getQuantity() * 1.2);
-    }
 }
