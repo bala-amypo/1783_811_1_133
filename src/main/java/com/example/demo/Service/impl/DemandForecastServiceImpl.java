@@ -1,31 +1,41 @@
-package com.example.demo.serviceimpl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.InventoryLevel;
-import com.example.demo.repository.InventoryLevelRepository;
+import com.example.demo.Entity.DemandForecast;
+import com.example.demo.Repository.DemandForecastRepository;
 import com.example.demo.service.DemandForecastService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class DemandForecastServiceImpl implements DemandForecastService
-{
-    private final InventoryLevelRepository inventoryLevelRepository;
+import java.util.List;
+import java.util.Optional;
 
-    public DemandForecastServiceImpl(InventoryLevelRepository inventoryLevelRepository)
-    {
-        this.inventoryLevelRepository = inventoryLevelRepository;
+@Service
+public class DemandForecastServiceImpl implements DemandForecastService {
+
+    private final DemandForecastRepository repository;
+
+    @Autowired
+    public DemandForecastServiceImpl(DemandForecastRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public int getForecast(Long storeId, Long productId)
-    {
-        InventoryLevel inventory =
-                inventoryLevelRepository.findByStoreIdAndProductId(storeId, productId);
+    public List<DemandForecast> getAllForecasts() {
+        return repository.findAll();
+    }
 
-        if (inventory == null)
-        {
-            return 0;
-        }
+    @Override
+    public Optional<DemandForecast> getForecastById(Long id) {
+        return repository.findById(id);
+    }
 
-        return (int) (inventory.getQuantity() * 1.2); // 20% growth
+    @Override
+    public DemandForecast saveForecast(DemandForecast forecast) {
+        return repository.save(forecast);
+    }
+
+    @Override
+    public void deleteForecast(Long id) {
+        repository.deleteById(id);
     }
 }
