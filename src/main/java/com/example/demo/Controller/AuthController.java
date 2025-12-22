@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.User;
+import com.example.demo.entity.AuthController;
 import com.example.demo.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,6 @@ public class UserController {
                 .body(userRepository.save(user));
     }
 
-    // ✅ Get User by ID
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userRepository.findById(id)
@@ -32,7 +31,6 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Get User by Email
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userRepository.findByEmail(email);
@@ -42,7 +40,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // ✅ Update User Role
     @PutMapping("/{id}/role")
     public ResponseEntity<User> updateUserRole(
             @PathVariable Long id,
@@ -54,7 +51,6 @@ public class UserController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Delete User
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (!userRepository.existsById(id)) {
