@@ -1,6 +1,13 @@
 package com.example.demo.service;
 
-public interface DemandForecastService
-{
-    int getForecast(Long storeId, Long productId);
+import com.example.demo.Entity.DemandForecast;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface DemandForecastService {
+    List<DemandForecast> getAllForecasts();
+    Optional<DemandForecast> getForecastById(Long id);
+    DemandForecast saveForecast(DemandForecast forecast);
+    void deleteForecast(Long id);
 }
