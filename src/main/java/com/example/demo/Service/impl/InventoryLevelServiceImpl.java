@@ -1,51 +1,33 @@
-package com.example.demo.service;
+package com.example.demo.serviceimpl;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.InventoryLevel;
+import com.example.demo.repository.InventoryLevelRepository;
+import com.example.demo.service.InventoryLevelService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
-public class InventoryLevelService {
+public class InventoryLevelServiceImpl implements InventoryLevelService
+{
+    private final InventoryLevelRepository inventoryLevelRepository;
 
-    private final InventoryLevelRepository inventoryRepo;
-    private final StoreRepository storeRepo;
-    private final ProductRepository productRepo;
-
-    public InventoryLevelService(
-            InventoryLevelRepository inventoryRepo,
-            StoreRepository storeRepo,
-            ProductRepository productRepo) {
-        this.inventoryRepo = inventoryRepo;
-        this.storeRepo = storeRepo;
-        this.productRepo = productRepo;
+    public InventoryLevelServiceImpl(InventoryLevelRepository inventoryLevelRepository)
+    {
+        this.inventoryLevelRepository = inventoryLevelRepository;
     }
 
-    public InventoryLevel updateInventory(Long storeId, Long productId, Integer quantity) {
-        if (quantity < 0) throw new IllegalArgumentException("Quantity must be >= 0");
-
-        Store store = storeRepo.findById(storeId).orElseThrow();
-        Product product = productRepo.findById(productId).orElseThrow();
-
-        InventoryLevel level =
-                inventoryRepo.findByStoreAndProduct(store, product);
-
-        if (level == null) {
-            level = new InventoryLevel();
-            level.setStore(store);
-            level.setProduct(product);
-        }
-
-        level.setQuantity(quantity);
-        return inventoryRepo.save(level);
+    public InventoryLevel createInventory(InventoryLevel inventoryLevel)
+    {
+        return inventoryLevelRepository.save(inventoryLevel);
     }
 
-    public List<InventoryLevel> getInventoryByStore(Long storeId) {
-        Store store = storeRepo.findById(storeId).orElseThrow();
-        return inventoryRepo.findAll()
-                .stream()
-                .filter(i -> i.getStore().equals(store))
-                .toList();
+    public InventoryLevel getInventoryById(Long id)
+    {
+        return inventoryLevelRepository.findById(id).orElse(null);
+    }
+
+    public List<InventoryLevel> getAllInventories()
+    {
+        return inventoryLevelRepository.findAll();
     }
 }
