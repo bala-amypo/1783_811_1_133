@@ -3,8 +3,9 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class Store {
-
+@Table(name = "stores")
+public class Store
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,22 +14,58 @@ public class Store {
     private String storeName;
 
     private String address;
+
     private String region;
 
     private Boolean active = true;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId()
+    {
+        return id;
+    }
 
-    public String getStoreName() { return storeName; }
-    public void setStoreName(String storeName) { this.storeName = storeName; }
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public String getStoreName()
+    {
+        return storeName;
+    }
 
-    public String getRegion() { return region; }
-    public void setRegion(String region) { this.region = region; }
+    public void setStoreName(String storeName)
+    {
+        this.storeName = storeName;
+    }
 
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
+    public String getAddress()
+    {
+        return address;
+    }
+
+    public void setAddress(String address)
+    {
+        this.address = address;
+    }
+
+    public String getRegion()
+    {
+        return region;
+    }
+
+    public void setRegion(String region)
+    {
+        this.region = region;
+    }
+
+    public Boolean getActive()
+    {
+        return active;
+    }
+
+    public void setActive(Boolean active)
+    {
+        this.active = active;
+    }
 }
