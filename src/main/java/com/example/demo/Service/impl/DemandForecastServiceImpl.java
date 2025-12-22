@@ -1,29 +1,16 @@
-package com.example.demo.service;
+package com.example.demo.serviceimpl;
 
-import com.example.demo.entity.DemandForecast;
-import com.example.demo.repository.DemandForecastRepository;
+import com.example.demo.entity.InventoryLevel;
+import com.example.demo.service.DemandForecastService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
-public class DemandForecastService {
-
-    private final DemandForecastRepository forecastRepository;
-
-    public DemandForecastService(DemandForecastRepository forecastRepository) {
-        this.forecastRepository = forecastRepository;
-    }
-
-    public DemandForecast createForecast(DemandForecast forecast) {
-        if (forecast.getForecastDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("Forecast date must be in the future");
-        }
-        return forecastRepository.save(forecast);
-    }
-
-    public DemandForecast getForecast(Long storeId, Long productId) {
-        return forecastRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("No forecast found"));
+public class DemandForecastServiceImpl implements DemandForecastService
+{
+    @Override
+    public int forecastDemand(InventoryLevel inventoryLevel)
+    {
+        int currentStock = inventoryLevel.getQuantity();
+        return (int) (currentStock * 1.2); // 20% growth forecast
     }
 }

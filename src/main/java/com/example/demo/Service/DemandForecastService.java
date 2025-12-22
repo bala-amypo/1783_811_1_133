@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.DemandForecast;
+import com.example.demo.entity.InventoryLevel;
 
-public interface DemandForecastService {
-
-    DemandForecast createForecast(DemandForecast forecast);
-
-    DemandForecast getForecast(Long storeId, Long productId);
+public interface DemandForecastService
+{
+    int forecastDemand(InventoryLevel inventoryLevel);
 }
