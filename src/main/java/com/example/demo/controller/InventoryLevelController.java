@@ -7,22 +7,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/inventory")
-public class InventoryController {
+@RequestMapping("/api/inventory-levels")
+public class InventoryLevelController {
 
-    private final InventoryLevelRepository inventoryRepository;
+    private final InventoryLevelRepository inventoryLevelRepository;
 
-    public InventoryController(InventoryLevelRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public InventoryLevelController(InventoryLevelRepository inventoryLevelRepository) {
+        this.inventoryLevelRepository = inventoryLevelRepository;
     }
 
+    // Create / Update inventory level
     @PostMapping
-    public InventoryLevel add(@RequestBody InventoryLevel inventory) {
-        return inventoryRepository.save(inventory);
+    public InventoryLevel save(@RequestBody InventoryLevel inventoryLevel) {
+        return inventoryLevelRepository.save(inventoryLevel);
     }
 
+    // Get all inventory levels
     @GetMapping
     public List<InventoryLevel> getAll() {
-        return inventoryRepository.findAll();
+        return inventoryLevelRepository.findAll();
+    }
+
+    // Get inventory level by id
+    @GetMapping("/{id}")
+    public InventoryLevel getById(@PathVariable Long id) {
+        return inventoryLevelRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inventory level not found"));
     }
 }
