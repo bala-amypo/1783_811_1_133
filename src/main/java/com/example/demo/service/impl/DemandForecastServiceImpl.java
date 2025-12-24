@@ -1,41 +1,33 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.Entity.DemandForecast;
-import com.example.demo.Repository.DemandForecastRepository;
+import com.example.demo.entity.DemandForecast;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.DemandForecastRepository;
 import com.example.demo.service.DemandForecastService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DemandForecastServiceImpl implements DemandForecastService {
 
-    private final DemandForecastRepository repository;
+    private final DemandForecastRepository demandForecastRepository;
 
-    @Autowired
-    public DemandForecastServiceImpl(DemandForecastRepository repository) {
-        this.repository = repository;
+    public DemandForecastServiceImpl(DemandForecastRepository demandForecastRepository) {
+        this.demandForecastRepository = demandForecastRepository;
     }
 
     @Override
-    public List<DemandForecast> getAllForecasts() {
-        return repository.findAll();
+    public DemandForecast createForecast(DemandForecast forecast) {
+        if (forecast.getForecastDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException("Forecast date must be in the future");
+        }
+        return demandForecastRepository.save(forecast);
     }
 
     @Override
-    public Optional<DemandForecast> getForecastById(Long id) {
-        return repository.findById(id);
-    }
-
-    @Override
-    public DemandForecast saveForecast(DemandForecast forecast) {
-        return repository.save(forecast);
-    }
-
-    @Override
-    public void deleteForecast(Long id) {
-        repository.deleteById(id);
+    public List<DemandForecast> getForecast(Long storeId, Long productId) {
+        return demandForecastRepository.findAll();
     }
 }
