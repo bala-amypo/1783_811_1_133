@@ -10,8 +10,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
     private String role;
 
     public User() {}
@@ -28,7 +32,7 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {   // ✅ REQUIRED
+    public String getPassword() {
         return password;
     }
 
@@ -36,7 +40,7 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {        // ✅ REQUIRED
+    public String getRole() {
         return role;
     }
 

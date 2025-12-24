@@ -1,27 +1,67 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "inventory_levels")
 public class InventoryLevel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String storeName;
-    private String productName;
-    private int quantity;
+    @ManyToOne(optional = false)
+    private Store store;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ManyToOne(optional = false)
+    private Product product;
 
-    public String getStoreName() { return storeName; }
-    public void setStoreName(String storeName) { this.storeName = storeName; }
+    @Column(nullable = false)
+    private Integer quantity;
 
-    public String getProductName() { return productName; }
-    public void setProductName(String productName) { this.productName = productName; }
+    private LocalDateTime lastUpdated;
 
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public InventoryLevel() {}
+
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("quantity must be >= 0");
+        }
+        this.quantity = quantity;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
 }

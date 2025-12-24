@@ -1,23 +1,88 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "transfer_suggestions")
 public class TransferSuggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fromStore;
-    private String toStore;
+    @ManyToOne(optional = false)
+    private Store sourceStore;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ManyToOne(optional = false)
+    private Store targetStore;
 
-    public String getFromStore() { return fromStore; }
-    public void setFromStore(String fromStore) { this.fromStore = fromStore; }
+    @ManyToOne(optional = false)
+    private Product product;
 
-    public String getToStore() { return toStore; }
-    public void setToStore(String toStore) { this.toStore = toStore; }
+    private Integer quantity;
+
+    private String priority;
+
+    private String status = "PENDING";
+
+    private LocalDateTime suggestedAt = LocalDateTime.now();
+
+    public TransferSuggestion() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public Store getSourceStore() {
+        return sourceStore;
+    }
+
+    public void setSourceStore(Store sourceStore) {
+        this.sourceStore = sourceStore;
+    }
+
+    public Store getTargetStore() {
+        return targetStore;
+    }
+
+    public void setTargetStore(Store targetStore) {
+        this.targetStore = targetStore;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getSuggestedAt() {
+        return suggestedAt;
+    }
 }
