@@ -1,12 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.AuthRequestDto;
-import com.example.demo.dto.AuthResponseDto;
-import com.example.demo.dto.RegisterRequestDto;
+import com.example.demo.entity.DemandForecast;
 
-public interface AuthService {
+import java.util.List;
 
-    void register(RegisterRequestDto dto);
+public interface DemandForecastService {
 
-    AuthResponseDto login(AuthRequestDto dto);
+    DemandForecast createForecast(DemandForecast forecast);
+
+    List<DemandForecast> getForecast(Long storeId, Long productId);
 }
