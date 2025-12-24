@@ -1,41 +1,41 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.Entity.Product;
-import com.example.demo.Repository.ProductRepository;
+import com.example.demo.entity.Product;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    public ProductServiceImpl(ProductRepository repository) {
-        this.repository = repository;
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Override
+    public Product createProduct(Product product) {
+        productRepository.findBySku(product.getSku())
+                .ifPresent(p -> {
+                    throw new BadRequestException("SKU already exists");
+                });
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product not found"));
     }
 
     @Override
     public List<Product> getAllProducts() {
-        return repository.findAll();
-    }
-
-    @Override
-    public Optional<Product> getProductById(Long id) {
-        return repository.findById(id);
-    }
-
-    @Override
-    public Product saveProduct(Product product) {
-        return repository.save(product);
-    }
-
-    @Override
-    public void deleteProduct(Long id) {
-        repository.deleteById(id);
+        return productRepository.findAll();
     }
 }

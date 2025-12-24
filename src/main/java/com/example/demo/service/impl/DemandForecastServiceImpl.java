@@ -12,22 +12,24 @@ import java.util.List;
 @Service
 public class DemandForecastServiceImpl implements DemandForecastService {
 
-    private final DemandForecastRepository demandForecastRepository;
+    private final DemandForecastRepository forecastRepository;
 
-    public DemandForecastServiceImpl(DemandForecastRepository demandForecastRepository) {
-        this.demandForecastRepository = demandForecastRepository;
+    public DemandForecastServiceImpl(DemandForecastRepository forecastRepository) {
+        this.forecastRepository = forecastRepository;
     }
 
     @Override
     public DemandForecast createForecast(DemandForecast forecast) {
+
         if (forecast.getForecastDate().isBefore(LocalDate.now())) {
             throw new BadRequestException("Forecast date must be in the future");
         }
-        return demandForecastRepository.save(forecast);
+
+        return forecastRepository.save(forecast);
     }
 
     @Override
     public List<DemandForecast> getForecast(Long storeId, Long productId) {
-        return demandForecastRepository.findAll();
+        return forecastRepository.findAll();
     }
 }
