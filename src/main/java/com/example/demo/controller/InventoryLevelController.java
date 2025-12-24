@@ -1,27 +1,28 @@
 package com.example.demo.controller;
 
-import com.example.demo.Entity.InventoryLevel;
-import com.example.demo.Repository.InventoryLevelRepository;
+import com.example.demo.entity.InventoryLevel;
+import com.example.demo.repository.InventoryLevelRepository;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/inventory")
-public class InventoryLevelController {
+@RequestMapping("/api/inventory")
+public class InventoryController {
 
-    private final InventoryLevelRepository repo;
+    private final InventoryLevelRepository inventoryRepository;
 
-    public InventoryLevelController(InventoryLevelRepository repo) {
-        this.repo = repo;
+    public InventoryController(InventoryLevelRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
     }
 
     @PostMapping
-    public InventoryLevel save(@RequestBody InventoryLevel inv) {
-        return repo.save(inv);
+    public InventoryLevel add(@RequestBody InventoryLevel inventory) {
+        return inventoryRepository.save(inventory);
     }
 
     @GetMapping
     public List<InventoryLevel> getAll() {
-        return repo.findAll();
+        return inventoryRepository.findAll();
     }
 }

@@ -1,27 +1,28 @@
 package com.example.demo.controller;
 
-import com.example.demo.Entity.Store;
-import com.example.demo.Repository.StoreRepository;
+import com.example.demo.entity.Store;
+import com.example.demo.repository.StoreRepository;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/stores")
+@RequestMapping("/api/stores")
 public class StoreController {
 
-    private final StoreRepository repo;
+    private final StoreRepository storeRepository;
 
-    public StoreController(StoreRepository repo) {
-        this.repo = repo;
+    public StoreController(StoreRepository storeRepository) {
+        this.storeRepository = storeRepository;
     }
 
     @PostMapping
-    public Store save(@RequestBody Store s) {
-        return repo.save(s);
+    public Store create(@RequestBody Store store) {
+        return storeRepository.save(store);
     }
 
     @GetMapping
     public List<Store> getAll() {
-        return repo.findAll();
+        return storeRepository.findAll();
     }
 }

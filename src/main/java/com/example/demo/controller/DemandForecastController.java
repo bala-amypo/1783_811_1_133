@@ -1,26 +1,28 @@
 package com.example.demo.controller;
 
-import com.example.demo.Entity.DemandForecast;
-import com.example.demo.Repository.DemandForecastRepository;
+import com.example.demo.entity.DemandForecast;
+import com.example.demo.repository.DemandForecastRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/forecast")
+@RequestMapping("/api/forecasts")
 public class DemandForecastController {
 
-    private final DemandForecastRepository repo;
+    private final DemandForecastRepository forecastRepository;
 
-    public DemandForecastController(DemandForecastRepository repo) {
-        this.repo = repo;
+    public DemandForecastController(DemandForecastRepository forecastRepository) {
+        this.forecastRepository = forecastRepository;
     }
 
     @PostMapping
-    public DemandForecast save(@RequestBody DemandForecast forecast) {
-        return repo.save(forecast);
+    public DemandForecast create(@RequestBody DemandForecast forecast) {
+        return forecastRepository.save(forecast);
     }
 
-    @GetMapping("/{id}")
-    public DemandForecast get(@PathVariable Long id) {
-        return repo.findById(id).orElse(null);
+    @GetMapping
+    public List<DemandForecast> getAll() {
+        return forecastRepository.findAll();
     }
 }
