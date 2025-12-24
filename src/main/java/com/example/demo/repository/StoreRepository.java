@@ -1,9 +1,11 @@
 package com.example.demo.repository;
 
-import com.example.demo.Entity.Store;
+import com.example.demo.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StoreRepository
-        extends JpaRepository<Store, Long>
-{
+import java.util.Optional;
+
+public interface StoreRepository extends JpaRepository<Store, Long> {
+
+    Optional<Store> findByStoreName(String storeName);
 }
