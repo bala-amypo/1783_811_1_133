@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.controller;
 
 import com.example.demo.Entity.DemandForecast;
 import com.example.demo.Repository.DemandForecastRepository;
