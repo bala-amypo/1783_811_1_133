@@ -16,11 +16,6 @@
     </properties>
 
     <dependencies>
-    <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-test</artifactId>
-    <scope>test</scope>
-</dependency>
 
     <!-- Spring Web -->
     <dependency>
@@ -74,6 +69,22 @@
         <version>0.11.5</version>
         <scope>runtime</scope>
     </dependency>
+    <!-- Spring Boot Test (REQUIRED for AMYPO tests) -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+<!-- TestNG (AMYPO tests require this) -->
+<dependency>
+    <groupId>org.testng</groupId>
+    <artifactId>testng</artifactId>
+    <version>7.9.0</version>
+    <scope>test</scope>
+</dependency>
+
+
 
 </dependencies>
 
