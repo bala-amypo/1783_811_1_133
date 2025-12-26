@@ -1,61 +1,57 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(
-    name = "stores",
-    uniqueConstraints = @UniqueConstraint(columnNames = "storeName")
-)
-public class Store {
+public class TransferSuggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String storeName;
+    @ManyToOne
+    private Store sourceStore;
 
-    private String address;
-    private String region;
+    @ManyToOne
+    private Store targetStore;
 
-    private Boolean active = true;
+    @ManyToOne
+    private Product product;
 
-    public Store() {}
+    private Integer suggestedQuantity;
+
+    private String reason;
+
+    private String status = "PENDING";
+
+    private LocalDateTime generatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.generatedAt = LocalDateTime.now();
+    }
+
+    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
     }
 
-    public String getStoreName() {
-        return storeName;
+    public Store getSourceStore() {
+        return sourceStore;
     }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
+    public void setSourceStore(Store sourceStore) {
+        this.sourceStore = sourceStore;
     }
 
-    public String getAddress() {
-        return address;
+    public Store getTargetStore() {
+        return targetStore;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setTargetStore(Store targetStore) {
+        this.targetStore = targetStore;
     }
 
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-}
+    public Product getProd
