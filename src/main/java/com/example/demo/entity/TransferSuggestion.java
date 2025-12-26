@@ -1,22 +1,36 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-public class Store {
+public class TransferSuggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String storeName;
+    @ManyToOne
+    private Store sourceStore;
 
-    private String address;
+    @ManyToOne
+    private Store targetStore;
 
-    private String region;
+    @ManyToOne
+    private Product product;
 
-    private boolean active = true;
+    private Integer suggestedQuantity;
+
+    private String reason;
+
+    private String status = "PENDING";
+
+    private LocalDateTime generatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.generatedAt = LocalDateTime.now();
+    }
 
     // ===== GETTERS & SETTERS =====
 
@@ -24,35 +38,51 @@ public class Store {
         return id;
     }
 
-    public String getStoreName() {
-        return storeName;
+    public Store getSourceStore() {
+        return sourceStore;
     }
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
+    public void setSourceStore(Store sourceStore) {
+        this.sourceStore = sourceStore;
     }
 
-    public String getAddress() {
-        return address;
+    public Store getTargetStore() {
+        return targetStore;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setTargetStore(Store targetStore) {
+        this.targetStore = targetStore;
     }
 
-    public String getRegion() {
-        return region;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public boolean isActive() {
-        return active;
+    public Integer getSuggestedQuantity() {
+        return suggestedQuantity;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setSuggestedQuantity(Integer suggestedQuantity) {
+        this.suggestedQuantity = suggestedQuantity;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getGeneratedAt() {
+        return generatedAt;
     }
 }
