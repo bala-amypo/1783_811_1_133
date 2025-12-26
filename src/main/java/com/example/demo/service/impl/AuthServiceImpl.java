@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserAccount register(RegisterRequestDto dto) {
+    public void register(RegisterRequestDto dto) {
         if (userRepo.findByEmail(dto.getEmail()).isPresent()) {
             throw new BadRequestException("Email already exists");
         }
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
 
-        return userRepo.save(user);
+        userRepo.save(user);
     }
 
     @Override

@@ -14,6 +14,7 @@ public class UserAccount {
     private String email;
 
     private String password;
+
     private String role;
 
     private LocalDateTime createdAt;
@@ -22,7 +23,7 @@ public class UserAccount {
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        updatedAt = createdAt;
     }
 
     @PreUpdate
@@ -30,5 +31,45 @@ public class UserAccount {
         updatedAt = LocalDateTime.now();
     }
 
-    // getters & setters
+    // ===== GETTERS / SETTERS =====
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }
