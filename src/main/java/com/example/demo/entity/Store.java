@@ -1,57 +1,55 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-public class TransferSuggestion {
+public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Store sourceStore;
+    @Column(unique = true)
+    private String storeName;
 
-    @ManyToOne
-    private Store targetStore;
+    private String address;
+    private String region;
 
-    @ManyToOne
-    private Product product;
-
-    private Integer suggestedQuantity;
-
-    private String reason;
-
-    private String status = "PENDING";
-
-    private LocalDateTime generatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.generatedAt = LocalDateTime.now();
-    }
-
-    // ===== GETTERS & SETTERS =====
+    private boolean active = true;
 
     public Long getId() {
         return id;
     }
 
-    public Store getSourceStore() {
-        return sourceStore;
+    public String getStoreName() {
+        return storeName;
     }
 
-    public void setSourceStore(Store sourceStore) {
-        this.sourceStore = sourceStore;
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 
-    public Store getTargetStore() {
-        return targetStore;
+    public String getAddress() {
+        return address;
     }
 
-    public void setTargetStore(Store targetStore) {
-        this.targetStore = targetStore;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public Product getProd
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+}
