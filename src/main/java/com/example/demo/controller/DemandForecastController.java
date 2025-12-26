@@ -11,7 +11,7 @@ import java.util.List;
 public class DemandForecastController {
 
     private final DemandForecastRepository forecastRepository;
-
+    
     public DemandForecastController(DemandForecastRepository forecastRepository) {
         this.forecastRepository = forecastRepository;
     }
