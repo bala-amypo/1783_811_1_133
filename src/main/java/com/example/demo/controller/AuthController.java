@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dto.AuthRequestDto;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.RegisterRequestDto;
-import com.example.demo.entity.UserAccount;
 import com.example.demo.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +17,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public UserAccount register(@RequestBody RegisterRequestDto dto) {
-        return authService.register(dto);
+    public void register(@RequestBody RegisterRequestDto dto) {
+        authService.register(dto);
     }
 
     @PostMapping("/login")

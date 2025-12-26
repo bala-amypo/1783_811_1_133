@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Product;
-import com.example.demo.repository.ProductRepository;
+import com.example.demo.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,19 +10,24 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping
     public Product create(@RequestBody Product product) {
-        return productRepository.save(product);
+        return productService.createProduct(product);
+    }
+
+    @GetMapping("/{id}")
+    public Product get(@PathVariable Long id) {
+        return productService.getProductById(id);
     }
 
     @GetMapping
     public List<Product> getAll() {
-        return productRepository.findAll();
+        return productService.getAllProducts();
     }
 }
