@@ -23,11 +23,7 @@
 
     <dependencies>
 
-        <!-- ===================== -->
-        <!-- ===== CORE ========= -->
-        <!-- ===================== -->
-
-        <!-- Web -->
+        <!-- Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -49,23 +45,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- ===================== -->
-        <!-- ===== SECURITY ===== -->
-        <!-- ===================== -->
-
-        <!-- Spring Security -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!-- Password Encoder -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
+            <version>8.0.33</version>
         </dependency>
 
         <!-- JWT -->
@@ -87,26 +67,10 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ===================== -->
-        <!-- ===== SWAGGER ====== -->
-        <!-- ===================== -->
-
+        <!-- Password Encoder -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-
-        <!-- ===================== -->
-        <!-- ===== UTILS ========= -->
-        <!-- ===================== -->
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
         <!-- Servlet API -->
@@ -116,24 +80,18 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ===================== -->
-        <!-- ===== TESTING ====== -->
-        <!-- ===================== -->
-
-        <!-- Spring Boot Test (JUnit excluded) -->
+        <!-- Swagger / OpenAPI -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
-        <!-- TestNG (Evaluator compatible) -->
+        <!-- ===================== -->
+        <!-- ===== TESTING ======= -->
+        <!-- ===================== -->
+
+        <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -157,20 +115,23 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Security Core (for AuthenticationManager, UserDetailsService) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <!-- Spring Security (REQUIRED for HttpSecurity, Filters, JWT, etc.) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>
         <plugins>
-
-            <!-- Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <release>17</release>
-                </configuration>
-            </plugin>
 
             <!-- Spring Boot -->
             <plugin>
@@ -178,12 +139,15 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Surefire for TestNG -->
+            <!-- Maven Surefire for TestNG -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
                 <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
 
