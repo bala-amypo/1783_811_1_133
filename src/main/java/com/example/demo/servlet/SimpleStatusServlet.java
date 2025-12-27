@@ -1,5 +1,6 @@
 package com.example.demo.servlet;
 
+import com.example.demo.util.Constants;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,8 +17,6 @@ public class SimpleStatusServlet extends HttpServlet {
 
         resp.setContentType("text/plain");
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write(
-                "Multi-Location Inventory Balancer is running"
-        );
+        resp.getWriter().write(Constants.STATUS_MESSAGE);
     }
 }
