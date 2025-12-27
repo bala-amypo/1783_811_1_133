@@ -55,9 +55,6 @@ public class InventoryLevel {
     }
 
     public void setQuantity(Integer quantity) {
-        if (quantity < 0) {
-            throw new IllegalArgumentException("quantity must be >= 0");
-        }
         this.quantity = quantity;
     }
 
