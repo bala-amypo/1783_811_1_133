@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.DemandForecast;
-import com.example.demo.repository.DemandForecastRepository;
+import com.example.demo.service.DemandForecastService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,19 +10,19 @@ import java.util.List;
 @RequestMapping("/api/forecasts")
 public class DemandForecastController {
 
-    private final DemandForecastService demandForecastService;
+    private final DemandForecastService forecastService;
 
-    public DemandForecastController(DemandForecastService demandForecastService) {
-        this.demandForecastService = demandForecastService;
+    public DemandForecastController(DemandForecastService forecastService) {
+        this.forecastService = forecastService;
     }
 
     @PostMapping
     public DemandForecast create(@RequestBody DemandForecast forecast) {
-        return demandForecastService.createForecast(forecast);
+        return forecastService.createForecast(forecast);
     }
 
-    @GetMapping
-    public List<DemandForecast> getAll() {
-        return demandForecastService.getAllForecasts();
+    @GetMapping("/{storeId}")
+    public List<DemandForecast> getForStore(@PathVariable Long storeId) {
+        return forecastService.getForecastsForStore(storeId);
     }
 }

@@ -1,10 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Store;
-import com.example.demo.repository.StoreRepository;
+import com.example.demo.service.StoreService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/stores")
 public class StoreController {
@@ -24,10 +25,4 @@ public class StoreController {
     public List<Store> getAll() {
         return storeService.getAllStores();
     }
-
-    @PutMapping("/deactivate/{id}")
-    public void deactivate(@PathVariable Long id) {
-        storeService.deactivateStore(id);
-    }
 }
-
