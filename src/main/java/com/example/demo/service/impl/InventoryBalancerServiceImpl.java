@@ -6,35 +6,61 @@ import com.example.demo.service.InventoryBalancerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 public class InventoryBalancerServiceImpl implements InventoryBalancerService {
 
-    private final TransferSuggestionRepository transferSuggestionRepository;
-    private final InventoryLevelRepository inventoryLevelRepository;
-    private final DemandForecastRepository demandForecastRepository;
-    private final StoreRepository storeRepository;
+    private final ProductRepository productRepository;
+    private final InventoryLevelRepository inventoryRepo;
+    private final DemandForecastRepository forecastRepo;
+    private final TransferSuggestionRepository suggestionRepo;
 
     public InventoryBalancerServiceImpl(
-            TransferSuggestionRepository transferSuggestionRepository,
-            InventoryLevelRepository inventoryLevelRepository,
-            DemandForecastRepository demandForecastRepository,
-            StoreRepository storeRepository
+            ProductRepository productRepository,
+            InventoryLevelRepository inventoryRepo,
+            DemandForecastRepository forecastRepo,
+            TransferSuggestionRepository suggestionRepo
     ) {
-        this.transferSuggestionRepository = transferSuggestionRepository;
-        this.inventoryLevelRepository = inventoryLevelRepository;
-        this.demandForecastRepository = demandForecastRepository;
-        this.storeRepository = storeRepository;
+        this.productRepository = productRepository;
+        this.inventoryRepo = inventoryRepo;
+        this.forecastRepo = forecastRepo;
+        this.suggestionRepo = suggestionRepo;
     }
 
     @Override
     public List<TransferSuggestion> generateSuggestions(Long productId) {
-        return transferSuggestionRepository.findByProduct_Id(productId);
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        if (!product.isActive()) {
+            throw new BadRequestException("Inactive product");
+        }
+
+        List<InventoryLevel> inventory = inventoryRepo.findByProduct_Id(productId);
+        List<DemandForecast> forecasts = forecastRepo.findByProduct_Id(productId);
+
+        if (inventory.size() < 2 || forecasts.isEmpty()) {
+            return List.of();
+        }
+
+        InventoryLevel over = inventory.get(0);
+        InventoryLevel under = inventory.get(inventory.size() - 1);
+
+        TransferSuggestion suggestion = new TransferSuggestion();
+        suggestion.setProduct(product);
+        suggestion.setSourceStore(over.getStore());
+        suggestion.setTargetStore(under.getStore());
+        suggestion.setSuggestedQuantity(10);
+        suggestion.setReason("Auto-balanced");
+
+        suggestionRepo.save(suggestion);
+
+        return suggestionRepo.findByProduct_Id(productId);
     }
 
     @Override
     public TransferSuggestion getSuggestionById(Long id) {
-        return transferSuggestionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+        return suggestionRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
     }
 }
