@@ -10,19 +10,19 @@ import java.util.List;
 @RequestMapping("/api/forecasts")
 public class DemandForecastController {
 
-    private final DemandForecastRepository forecastRepository;
-    
-    public DemandForecastController(DemandForecastRepository forecastRepository) {
-        this.forecastRepository = forecastRepository;
+    private final DemandForecastService demandForecastService;
+
+    public DemandForecastController(DemandForecastService demandForecastService) {
+        this.demandForecastService = demandForecastService;
     }
 
     @PostMapping
     public DemandForecast create(@RequestBody DemandForecast forecast) {
-        return forecastRepository.save(forecast);
+        return demandForecastService.createForecast(forecast);
     }
 
     @GetMapping
     public List<DemandForecast> getAll() {
-        return forecastRepository.findAll();
+        return demandForecastService.getAllForecasts();
     }
 }

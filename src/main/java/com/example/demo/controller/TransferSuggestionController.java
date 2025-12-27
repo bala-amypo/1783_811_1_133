@@ -14,8 +14,7 @@ public class TransferSuggestionController {
     }
 
     @PostMapping("/generate/{productId}")
-    public String generate(@PathVariable Long productId) {
-        balancerService.generateSuggestions(productId);
-        return "Transfer suggestions generated";
+    public List<TransferSuggestion> generate(@PathVariable Long productId) {
+        return balancerService.generateSuggestions(productId);
     }
 }

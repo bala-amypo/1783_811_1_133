@@ -20,7 +20,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public Iterable<Product> getAll() {
+    public List<Product> getAll() {
         return productService.getAllProducts();
+    }
+
+    @PutMapping("/deactivate/{id}")
+    public void deactivate(@PathVariable Long id) {
+        productService.deactivateProduct(id);
     }
 }

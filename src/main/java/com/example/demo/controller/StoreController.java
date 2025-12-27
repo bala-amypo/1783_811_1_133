@@ -5,24 +5,29 @@ import com.example.demo.repository.StoreRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/stores")
 public class StoreController {
 
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
 
-    public StoreController(StoreRepository storeRepository) {
-        this.storeRepository = storeRepository;
+    public StoreController(StoreService storeService) {
+        this.storeService = storeService;
     }
 
     @PostMapping
     public Store create(@RequestBody Store store) {
-        return storeRepository.save(store);
+        return storeService.createStore(store);
     }
 
     @GetMapping
     public List<Store> getAll() {
-        return storeRepository.findAll();
+        return storeService.getAllStores();
+    }
+
+    @PutMapping("/deactivate/{id}")
+    public void deactivate(@PathVariable Long id) {
+        storeService.deactivateStore(id);
     }
 }
+
