@@ -42,25 +42,38 @@ public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
         throw new BadRequestException("Quantity cannot be negative");
     }
 
-    Store store = storeRepo.findById(inventoryLevel.getStore().getId())
+    Long storeId = inventoryLevel.getStore().getId();
+    Long productId = inventoryLevel.getProduct().getId();
+
+    if (storeId == null || productId == null) {
+        throw new BadRequestException("Store ID and Product ID are required");
+    }
+
+    Store store = storeRepo.findById(storeId)
             .orElseThrow(() -> new BadRequestException("Store not found"));
 
-    Product product = productRepo.findById(inventoryLevel.getProduct().getId())
+    Product product = productRepo.findById(productId)
             .orElseThrow(() -> new BadRequestException("Product not found"));
 
     Optional<InventoryLevel> existing =
-            inventoryRepo.findByStore_IdAndProduct_Id(store.getId(), product.getId());
+            inventoryRepo.findByStore_IdAndProduct_Id(storeId, productId);
 
     if (existing.isPresent()) {
         InventoryLevel entity = existing.get();
         entity.setQuantity(inventoryLevel.getQuantity());
+        // ensure update timestamp
+        entity.setQuantity(inventoryLevel.getQuantity());
         return inventoryRepo.save(entity);
     }
 
-    inventoryLevel.setStore(store);
-    inventoryLevel.setProduct(product);
-    return inventoryRepo.save(inventoryLevel);
+    InventoryLevel entity = new InventoryLevel();
+    entity.setStore(store);
+    entity.setProduct(product);
+    entity.setQuantity(inventoryLevel.getQuantity());
+
+    return inventoryRepo.save(entity);
 }
+
 
 
     @Override
