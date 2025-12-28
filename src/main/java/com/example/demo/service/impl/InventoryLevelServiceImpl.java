@@ -32,38 +32,36 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     }
 
     @Override
-    public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
+public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
-        if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
-            throw new BadRequestException("Store and Product are required");
-        }
-
-        if (inventoryLevel.getQuantity() == null || inventoryLevel.getQuantity() < 0) {
-            throw new BadRequestException("Quantity cannot be negative");
-        }
-
-        // ✅ Attach managed entities
-        Store store = storeRepo.findById(inventoryLevel.getStore().getId())
-                .orElseThrow(() -> new BadRequestException("Store not found"));
-
-        Product product = productRepo.findById(inventoryLevel.getProduct().getId())
-                .orElseThrow(() -> new BadRequestException("Product not found"));
-
-        Optional<InventoryLevel> existingOpt =
-        inventoryRepo.findByStore_IdAndProduct_Id(store.getId(), product.getId());
-
-        if (existingOpt.isPresent()) {
-            InventoryLevel existing = existingOpt.get();
-            existing.setQuantity(inventoryLevel.getQuantity());
-            return inventoryRepo.save(existing);
-        }
-
-
-        // ✅ INSERT new row
-        inventoryLevel.setStore(store);
-        inventoryLevel.setProduct(product);
-        return inventoryRepo.save(inventoryLevel);
+    if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
+        throw new BadRequestException("Store and Product are required");
     }
+
+    if (inventoryLevel.getQuantity() == null || inventoryLevel.getQuantity() < 0) {
+        throw new BadRequestException("Quantity cannot be negative");
+    }
+
+    // Attach managed entities
+    Store store = storeRepo.findById(inventoryLevel.getStore().getId())
+            .orElseThrow(() -> new BadRequestException("Store not found"));
+
+    Product product = productRepo.findById(inventoryLevel.getProduct().getId())
+            .orElseThrow(() -> new BadRequestException("Product not found"));
+
+    // 🔑 IMPORTANT: repository returns ENTITY, not Optional
+    InventoryLevel existing =
+            inventoryRepo.findByStore_IdAndProduct_Id(store.getId(), product.getId());
+
+    if (existing != null) {
+        existing.setQuantity(inventoryLevel.getQuantity());
+        return inventoryRepo.save(existing); // UPDATE
+    }
+
+    inventoryLevel.setStore(store);
+    inventoryLevel.setProduct(product);
+    return inventoryRepo.save(inventoryLevel); // INSERT
+}
 
     @Override
     public List<InventoryLevel> getInventoryForStore(Long storeId) {
