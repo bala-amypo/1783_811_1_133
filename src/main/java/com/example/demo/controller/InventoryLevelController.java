@@ -14,12 +14,4 @@ public class InventoryLevelController {
         this.inventoryService = inventoryService;
     }
 
-    @PostMapping
-    public InventoryLevel save(@RequestBody InventoryLevel inventoryLevel) {
-        // ✅ DO NOT re-fetch Store/Product
-        // ✅ Let JPA handle relationships
-        // ✅ Tests expect pass-through behavior
-
-        return inventoryService.createOrUpdateInventory(inventoryLevel);
-    }
 }
