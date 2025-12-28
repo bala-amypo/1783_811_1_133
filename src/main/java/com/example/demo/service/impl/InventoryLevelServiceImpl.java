@@ -7,6 +7,7 @@ import com.example.demo.service.InventoryLevelService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InventoryLevelServiceImpl implements InventoryLevelService {
@@ -20,7 +21,7 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     @Override
     public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
-        // ✅ Required validations (tests expect these)
+        // ✅ Validation required by tests
         if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
             throw new BadRequestException("Store and Product are required");
         }
@@ -29,17 +30,19 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
             throw new BadRequestException("Quantity cannot be negative");
         }
 
-        return inventoryRepo
-                .findByStore_IdAndProduct_Id(
+        Optional<InventoryLevel> existingOpt =
+                inventoryRepo.findByStore_IdAndProduct_Id(
                         inventoryLevel.getStore().getId(),
                         inventoryLevel.getProduct().getId()
-                )
-                .map(existing -> {
-                    // ✅ update existing row (test expects update, not duplicate)
-                    existing.setQuantity(inventoryLevel.getQuantity());
-                    return inventoryRepo.save(existing);
-                })
-                .orElseGet(() -> inventoryRepo.save(inventoryLevel));
+                );
+
+        if (existingOpt.isPresent()) {
+            InventoryLevel existing = existingOpt.get();
+            existing.setQuantity(inventoryLevel.getQuantity());
+            return inventoryRepo.save(existing);
+        }
+
+        return inventoryRepo.save(inventoryLevel);
     }
 
     @Override
