@@ -18,9 +18,11 @@ public class Product {
 
     private String category;
 
+    @Column(nullable = false)
+    private Double price = 0.0;   // ✅ REQUIRED FIX
+
     private boolean active = true;
 
-    // ✅ REQUIRED by JPA & tests
     public Product() {
     }
 
@@ -50,6 +52,14 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public boolean isActive() {
