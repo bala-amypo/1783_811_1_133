@@ -12,12 +12,15 @@ public class TransferSuggestion {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "source_store_id", nullable = false)
     private Store sourceStore;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "target_store_id", nullable = false)
     private Store targetStore;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
@@ -29,15 +32,15 @@ public class TransferSuggestion {
     @Column(nullable = false)
     private String status = "PENDING";
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime generatedAt;
 
-    // ✅ REQUIRED by JPA & tests
-    public TransferSuggestion() {
-    }
+    // ✅ REQUIRED
+    public TransferSuggestion() {}
 
+    // ✅ MUST be PrePersist ONLY
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         this.generatedAt = LocalDateTime.now();
     }
 
@@ -89,7 +92,6 @@ public class TransferSuggestion {
         return status;
     }
 
-    // ✅ REQUIRED for tests
     public void setStatus(String status) {
         this.status = status;
     }

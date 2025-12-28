@@ -20,6 +20,7 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     @Override
     public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
+        // ✅ Required validations (tests expect these)
         if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
             throw new BadRequestException("Store and Product are required");
         }
@@ -28,18 +29,17 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
             throw new BadRequestException("Quantity cannot be negative");
         }
 
-        InventoryLevel existing =
-                inventoryRepo.findByStore_IdAndProduct_Id(
+        return inventoryRepo
+                .findByStore_IdAndProduct_Id(
                         inventoryLevel.getStore().getId(),
                         inventoryLevel.getProduct().getId()
-                );
-
-        if (existing != null) {
-            existing.setQuantity(inventoryLevel.getQuantity());
-            return inventoryRepo.save(existing);
-        }
-
-        return inventoryRepo.save(inventoryLevel);
+                )
+                .map(existing -> {
+                    // ✅ update existing row (test expects update, not duplicate)
+                    existing.setQuantity(inventoryLevel.getQuantity());
+                    return inventoryRepo.save(existing);
+                })
+                .orElseGet(() -> inventoryRepo.save(inventoryLevel));
     }
 
     @Override
