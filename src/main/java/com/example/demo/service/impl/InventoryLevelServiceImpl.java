@@ -1,20 +1,18 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.entity.InventoryLevel;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.InventoryLevelRepository;
-import com.example.demo.service.InventoryLevelService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class InventoryLevelServiceImpl implements InventoryLevelService {
 
     private final InventoryLevelRepository inventoryRepo;
+    private final StoreRepository storeRepo;
+    private final ProductRepository productRepo;
 
-    public InventoryLevelServiceImpl(InventoryLevelRepository inventoryRepo) {
+    public InventoryLevelServiceImpl(
+            InventoryLevelRepository inventoryRepo,
+            StoreRepository storeRepo,
+            ProductRepository productRepo
+    ) {
         this.inventoryRepo = inventoryRepo;
+        this.storeRepo = storeRepo;
+        this.productRepo = productRepo;
     }
 
     @Override
@@ -28,11 +26,18 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
             throw new BadRequestException("Quantity cannot be negative");
         }
 
+        // ✅ REATTACH managed entities
+        Store store = storeRepo.findById(inventoryLevel.getStore().getId())
+                .orElseThrow(() -> new BadRequestException("Store not found"));
+
+        Product product = productRepo.findById(inventoryLevel.getProduct().getId())
+                .orElseThrow(() -> new BadRequestException("Product not found"));
+
+        inventoryLevel.setStore(store);
+        inventoryLevel.setProduct(product);
+
         return inventoryRepo
-                .findByStore_IdAndProduct_Id(
-                        inventoryLevel.getStore().getId(),
-                        inventoryLevel.getProduct().getId()
-                )
+                .findByStore_IdAndProduct_Id(store.getId(), product.getId())
                 .map(existing -> {
                     existing.setQuantity(inventoryLevel.getQuantity());
                     return inventoryRepo.save(existing);
