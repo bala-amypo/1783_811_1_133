@@ -35,14 +35,19 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     }
 
     @Override
+@Transactional
 public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
-    if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
-        throw new BadRequestException("Store and Product are required");
+    if (inventoryLevel == null) {
+        throw new BadRequestException("Inventory is required");
     }
 
     if (inventoryLevel.getQuantity() == null || inventoryLevel.getQuantity() < 0) {
         throw new BadRequestException("Quantity cannot be negative");
+    }
+
+    if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
+        throw new BadRequestException("Store and Product are required");
     }
 
     Long storeId = inventoryLevel.getStore().getId();
@@ -58,24 +63,6 @@ public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
     Product product = productRepo.findById(productId)
             .orElseThrow(() -> new BadRequestException("Product not found"));
 
-    Optional<InventoryLevel> existing =
-            inventoryRepo.findByStore_IdAndProduct_Id(storeId, productId);
-
-    if (existing.isPresent()) {
-        InventoryLevel entity = existing.get();
-        entity.setQuantity(inventoryLevel.getQuantity());
-        // ensure update timestamp
-        entity.setQuantity(inventoryLevel.getQuantity());
-        return inventoryRepo.save(entity);
-    }
-
-    InventoryLevel entity = new InventoryLevel();
-    entity.setStore(store);
-    entity.setProduct(product);
-    entity.setQuantity(inventoryLevel.getQuantity());
-
-    return inventoryRepo.save(entity);
-}
 
 
 
