@@ -16,7 +16,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
+    public Product create(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
@@ -25,7 +25,8 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @PutMapping("/deactivate/{id}")
+    // 🔥 TEST EXPECTS THIS PATH
+    @PutMapping("/{id}/deactivate")
     public void deactivate(@PathVariable Long id) {
         productService.deactivateProduct(id);
     }
