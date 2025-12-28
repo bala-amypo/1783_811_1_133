@@ -14,4 +14,10 @@ public class InventoryLevelController {
         this.inventoryService = inventoryService;
     }
 
+    @PostMapping
+    public InventoryLevel createOrUpdateInventory(
+            @RequestBody InventoryLevel inventoryLevel
+    ) {
+        return inventoryService.createOrUpdateInventory(inventoryLevel);
+    }
 }
