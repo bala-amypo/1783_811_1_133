@@ -7,49 +7,49 @@ import com.example.demo.repository.*;
 import com.example.demo.service.InventoryBalancerService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class InventoryBalancerServiceImpl implements InventoryBalancerService {
 
-    private final TransferSuggestionRepository transferRepo;
-    private final InventoryLevelRepository inventoryRepo;
-    private final DemandForecastRepository forecastRepo;
-    private final ProductRepository productRepo;
+    private final ProductRepository productRepository;
+    private final InventoryLevelRepository inventoryLevelRepository;
+    private final TransferSuggestionRepository transferSuggestionRepository;
 
     public InventoryBalancerServiceImpl(
-            TransferSuggestionRepository transferRepo,
-            InventoryLevelRepository inventoryRepo,
-            DemandForecastRepository forecastRepo,
-            ProductRepository productRepo
+            ProductRepository productRepository,
+            InventoryLevelRepository inventoryLevelRepository,
+            TransferSuggestionRepository transferSuggestionRepository
     ) {
-        this.transferRepo = transferRepo;
-        this.inventoryRepo = inventoryRepo;
-        this.forecastRepo = forecastRepo;
-        this.productRepo = productRepo;
+        this.productRepository = productRepository;
+        this.inventoryLevelRepository = inventoryLevelRepository;
+        this.transferSuggestionRepository = transferSuggestionRepository;
     }
 
     @Override
     public List<TransferSuggestion> generateSuggestions(Long productId) {
 
-        Product product = productRepo.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (!product.isActive()) {
             throw new BadRequestException("Inactive product");
         }
 
-        List<InventoryLevel> levels = inventoryRepo.findByProduct_Id(productId);
-        if (levels.size() < 2) return List.of();
+        List<InventoryLevel> inventory =
+                inventoryLevelRepository.findByProduct_Id(productId);
 
-        InventoryLevel source = levels.get(0);
-        InventoryLevel target = levels.get(1);
+        if (inventory.size() < 2) {
+            return List.of();
+        }
 
-        if (source.getQuantity() < target.getQuantity()) {
-            InventoryLevel tmp = source;
+        InventoryLevel source = inventory.get(0);
+        InventoryLevel target = inventory.get(1);
+
+        if (source.getQuantity() <= target.getQuantity()) {
+            InventoryLevel temp = source;
             source = target;
-            target = tmp;
+            target = temp;
         }
 
         TransferSuggestion suggestion = new TransferSuggestion();
@@ -59,15 +59,15 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
         suggestion.setSuggestedQuantity(
                 Math.max(1, (source.getQuantity() - target.getQuantity()) / 2)
         );
-        suggestion.setReason("Auto-generated");
+        suggestion.setReason("Auto-balancing");
 
-        transferRepo.save(suggestion);
+        transferSuggestionRepository.save(suggestion);
         return List.of(suggestion);
     }
 
     @Override
     public TransferSuggestion getSuggestionById(Long id) {
-        return transferRepo.findById(id)
+        return transferSuggestionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
     }
 }

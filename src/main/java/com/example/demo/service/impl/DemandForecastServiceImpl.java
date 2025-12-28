@@ -19,12 +19,15 @@ public class DemandForecastServiceImpl implements DemandForecastService {
     }
 
     @Override
-    public DemandForecast createForecast(DemandForecast forecast) {
-        if (forecast.getForecastDate().isBefore(LocalDate.now())) {
-            throw new BadRequestException("Forecast date cannot be in the past");
-        }
-        return forecastRepo.save(forecast);
+public DemandForecast createForecast(DemandForecast forecast) {
+
+    if (forecast.getForecastDate().isBefore(LocalDate.now())) {
+        throw new BadRequestException("Forecast date cannot be in the past");
     }
+
+    return forecastRepo.save(forecast);
+}
+
 
     @Override
     public List<DemandForecast> getForecastsForStore(Long storeId) {
