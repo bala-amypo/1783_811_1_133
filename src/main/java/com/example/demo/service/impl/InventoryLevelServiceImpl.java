@@ -40,23 +40,26 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
             throw new BadRequestException("Quantity cannot be negative");
         }
 
-        // 🔑 REATTACH managed entities
+        // ✅ Attach managed entities
         Store store = storeRepo.findById(inventoryLevel.getStore().getId())
                 .orElseThrow(() -> new BadRequestException("Store not found"));
 
         Product product = productRepo.findById(inventoryLevel.getProduct().getId())
                 .orElseThrow(() -> new BadRequestException("Product not found"));
 
+        InventoryLevel existing =
+                inventoryRepo.findByStore_IdAndProduct_Id(store.getId(), product.getId());
+
+        if (existing != null) {
+            // ✅ UPDATE ONLY quantity
+            existing.setQuantity(inventoryLevel.getQuantity());
+            return inventoryRepo.save(existing);
+        }
+
+        // ✅ INSERT new row
         inventoryLevel.setStore(store);
         inventoryLevel.setProduct(product);
-
-        return inventoryRepo
-                .findByStore_IdAndProduct_Id(store.getId(), product.getId())
-                .map(existing -> {
-                    existing.setQuantity(inventoryLevel.getQuantity());
-                    return inventoryRepo.save(existing);
-                })
-                .orElseGet(() -> inventoryRepo.save(inventoryLevel));
+        return inventoryRepo.save(inventoryLevel);
     }
 
     @Override
