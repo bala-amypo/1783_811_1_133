@@ -30,8 +30,9 @@ public class DemandForecastServiceImpl implements DemandForecastService {
         }
 
         if (forecast.getForecastDate().isBefore(LocalDate.now())) {
-            throw new BadRequestException("Forecast date cannot be in the past");
-        }
+    throw new BadRequestException("Forecast date must be in the future");
+}
+
 
         return forecastRepo.save(forecast);
     }

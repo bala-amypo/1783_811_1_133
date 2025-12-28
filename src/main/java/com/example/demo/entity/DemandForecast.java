@@ -18,17 +18,30 @@ public class DemandForecast {
     private Product product;
 
     @Column(nullable = false)
-    private Integer forecastedDemand;
-
-    @Column(nullable = false)
     private LocalDate forecastDate;
 
-    @PrePersist
-    public void validateFutureDate() {
-        if (forecastDate.isBefore(LocalDate.now())) {
-            throw new BadRequestException("Forecast date must be in the future");
-        }
-    }
+    @Column(nullable = false)
+    private Integer forecastedDemand;
 
-    // getters & setters
+    public DemandForecast() {}
+
+    // ❌ DO NOT throw exceptions in entity lifecycle
+
+    // ✅ GETTERS / SETTERS
+
+    public Long getId() { return id; }
+
+    public Store getStore() { return store; }
+    public void setStore(Store store) { this.store = store; }
+
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
+
+    public LocalDate getForecastDate() { return forecastDate; }
+    public void setForecastDate(LocalDate forecastDate) { this.forecastDate = forecastDate; }
+
+    public Integer getForecastedDemand() { return forecastedDemand; }
+    public void setForecastedDemand(Integer forecastedDemand) {
+        this.forecastedDemand = forecastedDemand;
+    }
 }
