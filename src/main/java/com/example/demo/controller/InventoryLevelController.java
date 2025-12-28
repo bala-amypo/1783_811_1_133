@@ -15,9 +15,7 @@ public class InventoryLevelController {
     }
 
     @PostMapping
-    public InventoryLevel createOrUpdateInventory(
-            @RequestBody InventoryLevel inventoryLevel
-    ) {
+    public InventoryLevel create(@RequestBody InventoryLevel inventoryLevel) {
         return inventoryService.createOrUpdateInventory(inventoryLevel);
     }
 }

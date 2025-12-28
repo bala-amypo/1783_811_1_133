@@ -15,6 +15,7 @@ import java.util.Optional;
 
 
 @Service
+@Transactional
 public class InventoryLevelServiceImpl implements InventoryLevelService {
 
     private final InventoryLevelRepository inventoryRepo;
