@@ -11,12 +11,10 @@ public class DemandForecast {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "store_id", nullable = false)
+    @ManyToOne(optional = false)
     private Store store;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(optional = false)
     private Product product;
 
     @Column(nullable = false)
@@ -27,19 +25,5 @@ public class DemandForecast {
 
     public DemandForecast() {}
 
-    public Long getId() { return id; }
-
-    public Store getStore() { return store; }
-    public void setStore(Store store) { this.store = store; }
-
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
-
-    public LocalDate getForecastDate() { return forecastDate; }
-    public void setForecastDate(LocalDate forecastDate) { this.forecastDate = forecastDate; }
-
-    public Integer getForecastedDemand() { return forecastedDemand; }
-    public void setForecastedDemand(Integer forecastedDemand) {
-        this.forecastedDemand = forecastedDemand;
-    }
+    // getters & setters ONLY
 }
