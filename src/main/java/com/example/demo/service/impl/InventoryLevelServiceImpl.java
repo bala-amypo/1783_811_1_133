@@ -20,21 +20,22 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     @Override
     public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
-        if (inventoryLevel.getQuantity() < 0) {
-            throw new BadRequestException("Quantity cannot be negative");
-        }
-
-        return inventoryRepo
-                .findByStore_IdAndProduct_Id(
-                        inventoryLevel.getStore().getId(),
-                        inventoryLevel.getProduct().getId()
-                )
-                .map(existing -> {
-                    existing.setQuantity(inventoryLevel.getQuantity());
-                    return inventoryRepo.save(existing);
-                })
-                .orElseGet(() -> inventoryRepo.save(inventoryLevel));
+    if (inventoryLevel.getQuantity() < 0) {
+        throw new BadRequestException("Quantity cannot be negative");
     }
+
+    return inventoryRepo
+            .findByStore_IdAndProduct_Id(
+                    inventoryLevel.getStore().getId(),
+                    inventoryLevel.getProduct().getId()
+            )
+            .map(existing -> {
+                existing.setQuantity(inventoryLevel.getQuantity());
+                return inventoryRepo.save(existing);
+            })
+            .orElseGet(() -> inventoryRepo.save(inventoryLevel));
+}
+
 
     @Override
     public List<InventoryLevel> getInventoryForStore(Long storeId) {

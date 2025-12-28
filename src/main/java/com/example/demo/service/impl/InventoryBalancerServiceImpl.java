@@ -13,69 +13,61 @@ import java.util.List;
 @Service
 public class InventoryBalancerServiceImpl implements InventoryBalancerService {
 
-    private final TransferSuggestionRepository transferSuggestionRepository;
-    private final InventoryLevelRepository inventoryLevelRepository;
-    private final DemandForecastRepository demandForecastRepository;
-    private final ProductRepository productRepository;
+    private final TransferSuggestionRepository transferRepo;
+    private final InventoryLevelRepository inventoryRepo;
+    private final DemandForecastRepository forecastRepo;
+    private final ProductRepository productRepo;
 
     public InventoryBalancerServiceImpl(
-            TransferSuggestionRepository transferSuggestionRepository,
-            InventoryLevelRepository inventoryLevelRepository,
-            DemandForecastRepository demandForecastRepository,
-            ProductRepository productRepository
+            TransferSuggestionRepository transferRepo,
+            InventoryLevelRepository inventoryRepo,
+            DemandForecastRepository forecastRepo,
+            ProductRepository productRepo
     ) {
-        this.transferSuggestionRepository = transferSuggestionRepository;
-        this.inventoryLevelRepository = inventoryLevelRepository;
-        this.demandForecastRepository = demandForecastRepository;
-        this.productRepository = productRepository;
+        this.transferRepo = transferRepo;
+        this.inventoryRepo = inventoryRepo;
+        this.forecastRepo = forecastRepo;
+        this.productRepo = productRepo;
     }
 
     @Override
     public List<TransferSuggestion> generateSuggestions(Long productId) {
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (!product.isActive()) {
             throw new BadRequestException("Inactive product");
         }
 
-        List<InventoryLevel> inventoryLevels =
-                inventoryLevelRepository.findByProduct_Id(productId);
+        List<InventoryLevel> levels = inventoryRepo.findByProduct_Id(productId);
+        if (levels.size() < 2) return List.of();
 
-        List<DemandForecast> forecasts =
-                demandForecastRepository.findByProduct_Id(productId);
+        InventoryLevel source = levels.get(0);
+        InventoryLevel target = levels.get(1);
 
-        if (inventoryLevels.size() < 2 || forecasts.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        InventoryLevel overStock = inventoryLevels.get(0);
-        InventoryLevel underStock = inventoryLevels.get(1);
-
-        if (overStock.getQuantity() < underStock.getQuantity()) {
-            InventoryLevel temp = overStock;
-            overStock = underStock;
-            underStock = temp;
+        if (source.getQuantity() < target.getQuantity()) {
+            InventoryLevel tmp = source;
+            source = target;
+            target = tmp;
         }
 
         TransferSuggestion suggestion = new TransferSuggestion();
         suggestion.setProduct(product);
-        suggestion.setSourceStore(overStock.getStore());
-        suggestion.setTargetStore(underStock.getStore());
+        suggestion.setSourceStore(source.getStore());
+        suggestion.setTargetStore(target.getStore());
         suggestion.setSuggestedQuantity(
-                Math.max(1, (overStock.getQuantity() - underStock.getQuantity()) / 2)
+                Math.max(1, (source.getQuantity() - target.getQuantity()) / 2)
         );
-        suggestion.setReason("Auto-balancing based on demand forecast");
+        suggestion.setReason("Auto-generated");
 
-        transferSuggestionRepository.save(suggestion);
-
+        transferRepo.save(suggestion);
         return List.of(suggestion);
     }
 
     @Override
     public TransferSuggestion getSuggestionById(Long id) {
-        return transferSuggestionRepository.findById(id)
+        return transferRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
     }
 }
