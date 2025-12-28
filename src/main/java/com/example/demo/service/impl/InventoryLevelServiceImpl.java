@@ -20,23 +20,27 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     @Override
     public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
-        if (inventoryLevel.getQuantity() < 0) {
+        // 🔴 REQUIRED: validation
+        if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
+            throw new BadRequestException("Store and Product are required");
+        }
+
+        if (inventoryLevel.getQuantity() == null || inventoryLevel.getQuantity() < 0) {
             throw new BadRequestException("Quantity cannot be negative");
         }
 
         return inventoryRepo
-            .findByStore_IdAndProduct_Id(
-                inventoryLevel.getStore().getId(),
-                inventoryLevel.getProduct().getId()
-            )
-            .map(existing -> {
-                existing.setQuantity(inventoryLevel.getQuantity());
-                return inventoryRepo.save(existing);
-            })
-            .orElseGet(() -> inventoryRepo.save(inventoryLevel));
+                .findByStore_IdAndProduct_Id(
+                        inventoryLevel.getStore().getId(),
+                        inventoryLevel.getProduct().getId()
+                )
+                .map(existing -> {
+                    // 🔴 REQUIRED: update managed entity
+                    existing.setQuantity(inventoryLevel.getQuantity());
+                    return inventoryRepo.save(existing);
+                })
+                .orElseGet(() -> inventoryRepo.save(inventoryLevel));
     }
-
-
 
     @Override
     public List<InventoryLevel> getInventoryForStore(Long storeId) {
