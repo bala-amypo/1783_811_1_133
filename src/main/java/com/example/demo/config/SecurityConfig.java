@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,12 +23,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+            // ✅ JWT = stateless
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session ->
-                    session.sessionCreationPolicy(
-                            org.springframework.security.config.http.SessionCreationPolicy.STATELESS
-                    )
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+
+            // ✅ VERY IMPORTANT: disable defaults
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable())
+
             .authorizeHttpRequests(auth -> auth
                     // 🔓 Public endpoints
                     .requestMatchers(
@@ -44,6 +49,7 @@ public class SecurityConfig {
                     .anyRequest().permitAll()
             );
 
+        // ✅ JWT filter
         http.addFilterBefore(
                 jwtFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -51,7 +57,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(
