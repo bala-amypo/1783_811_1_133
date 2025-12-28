@@ -20,7 +20,6 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
     @Override
     public InventoryLevel createOrUpdateInventory(InventoryLevel inventoryLevel) {
 
-        // 🔴 REQUIRED: validation
         if (inventoryLevel.getStore() == null || inventoryLevel.getProduct() == null) {
             throw new BadRequestException("Store and Product are required");
         }
@@ -35,11 +34,14 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
                         inventoryLevel.getProduct().getId()
                 )
                 .map(existing -> {
-                    // 🔴 REQUIRED: update managed entity
+                    // ✅ update existing (unique store+product)
                     existing.setQuantity(inventoryLevel.getQuantity());
                     return inventoryRepo.save(existing);
                 })
-                .orElseGet(() -> inventoryRepo.save(inventoryLevel));
+                .orElseGet(() -> {
+                    // ✅ save new
+                    return inventoryRepo.save(inventoryLevel);
+                });
     }
 
     @Override

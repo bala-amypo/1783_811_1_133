@@ -19,20 +19,22 @@ public class DemandForecastServiceImpl implements DemandForecastService {
     }
 
     @Override
-public DemandForecast createForecast(DemandForecast forecast) {
+    public DemandForecast createForecast(DemandForecast forecast) {
 
-    if (forecast.getStore() == null || forecast.getProduct() == null) {
-        throw new BadRequestException("Store and Product are required");
+        if (forecast.getStore() == null || forecast.getProduct() == null) {
+            throw new BadRequestException("Store and Product are required");
+        }
+
+        if (forecast.getForecastDate() == null) {
+            throw new BadRequestException("Forecast date is required");
+        }
+
+        if (forecast.getForecastDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException("Forecast date cannot be in the past");
+        }
+
+        return forecastRepo.save(forecast);
     }
-
-    if (forecast.getForecastDate() == null ||
-        forecast.getForecastDate().isBefore(LocalDate.now())) {
-        throw new BadRequestException("Forecast date cannot be in the past");
-    }
-
-    return forecastRepo.save(forecast);
-}
-
 
     @Override
     public List<DemandForecast> getForecastsForStore(Long storeId) {
