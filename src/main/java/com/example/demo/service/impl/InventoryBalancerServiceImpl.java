@@ -37,48 +37,4 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (!product.isActive()) {
-            throw new BadRequestException("Inactive product");
-        }
-
-        List<InventoryLevel> inventoryLevels =
-                inventoryLevelRepository.findByProduct_Id(productId);
-
-        List<DemandForecast> forecasts =
-                demandForecastRepository.findByProduct_Id(productId);
-
-        List<TransferSuggestion> suggestions = new ArrayList<>();
-
-        if (inventoryLevels.size() < 2 || forecasts.isEmpty()) {
-            return suggestions;
-        }
-
-        InventoryLevel overStock = inventoryLevels.get(0);
-        InventoryLevel underStock = inventoryLevels.get(1);
-
-        if (overStock.getQuantity() <= underStock.getQuantity()) {
-            InventoryLevel temp = overStock;
-            overStock = underStock;
-            underStock = temp;
-        }
-
-        TransferSuggestion suggestion = new TransferSuggestion();
-        suggestion.setProduct(product);
-        suggestion.setSourceStore(overStock.getStore());
-        suggestion.setTargetStore(underStock.getStore());
-        suggestion.setSuggestedQuantity(
-                Math.max(1, (overStock.getQuantity() - underStock.getQuantity()) / 2)
-        );
-        suggestion.setReason("Auto-balancing based on demand forecast");
-
-        transferSuggestionRepository.save(suggestion);
-        suggestions.add(suggestion);
-
-        return suggestions;
-    }
-
-    @Override
-    public TransferSuggestion getSuggestionById(Long id) {
-        return transferSuggestionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Suggestion not found"));
-    }
-}
+            throw new BadRequestException("Inactive
