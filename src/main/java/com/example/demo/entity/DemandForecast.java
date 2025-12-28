@@ -23,7 +23,54 @@ public class DemandForecast {
     @Column(nullable = false)
     private Integer forecastedDemand;
 
+    private Double confidenceScore;
+
+    // REQUIRED by JPA
     public DemandForecast() {}
 
-    // getters & setters ONLY
+    // ---------- GETTERS ----------
+    public Long getId() {
+        return id;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public LocalDate getForecastDate() {
+        return forecastDate;
+    }
+
+    public Integer getForecastedDemand() {
+        return forecastedDemand;
+    }
+
+    public Double getConfidenceScore() {
+        return confidenceScore;
+    }
+
+    // ---------- SETTERS ----------
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setForecastDate(LocalDate forecastDate) {
+        this.forecastDate = forecastDate;
+    }
+
+    public void setForecastedDemand(Integer forecastedDemand) {
+        this.forecastedDemand = forecastedDemand;
+    }
+
+    public void setConfidenceScore(Double confidenceScore) {
+        this.confidenceScore = confidenceScore;
+    }
 }
