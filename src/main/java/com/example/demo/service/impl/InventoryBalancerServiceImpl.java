@@ -11,6 +11,7 @@ import com.example.demo.repository.TransferSuggestionRepository;
 import com.example.demo.service.InventoryBalancerService;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -47,13 +48,17 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
             return List.of();
         }
 
-        InventoryLevel source = inventory.get(0);
-        InventoryLevel target = inventory.get(1);
+        // ✅ Find highest and lowest stock
+        InventoryLevel source = inventory.stream()
+                .max(Comparator.comparingInt(InventoryLevel::getQuantity))
+                .get();
+
+        InventoryLevel target = inventory.stream()
+                .min(Comparator.comparingInt(InventoryLevel::getQuantity))
+                .get();
 
         if (source.getQuantity() <= target.getQuantity()) {
-            InventoryLevel temp = source;
-            source = target;
-            target = temp;
+            return List.of();
         }
 
         TransferSuggestion suggestion = new TransferSuggestion();
@@ -63,7 +68,7 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
         suggestion.setSuggestedQuantity(
                 Math.max(1, (source.getQuantity() - target.getQuantity()) / 2)
         );
-        suggestion.setReason("Auto-balancing");
+        suggestion.setReason("Auto-balancing based on inventory difference");
 
         transferSuggestionRepository.save(suggestion);
 

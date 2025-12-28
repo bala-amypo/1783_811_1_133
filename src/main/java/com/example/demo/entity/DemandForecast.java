@@ -12,9 +12,11 @@ public class DemandForecast {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
@@ -25,7 +27,7 @@ public class DemandForecast {
 
     private Double confidenceScore;
 
-    // ✅ REQUIRED by JPA & tests
+    // Required by JPA & tests
     public DemandForecast() {
     }
 
@@ -73,3 +75,4 @@ public class DemandForecast {
         this.confidenceScore = confidenceScore;
     }
 }
+    

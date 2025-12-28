@@ -27,16 +27,20 @@ public class InventoryLevel {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
+    // ❗ MUST be nullable for pre-persist tests
     private LocalDateTime lastUpdated;
 
-    // ✅ REQUIRED by JPA & tests
+    // Required by JPA
     public InventoryLevel() {
     }
 
     @PrePersist
+    public void prePersist() {
+        this.lastUpdated = LocalDateTime.now();
+    }
+
     @PreUpdate
-    public void updateTimestamp() {
+    public void preUpdate() {
         this.lastUpdated = LocalDateTime.now();
     }
 
