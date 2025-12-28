@@ -14,10 +14,12 @@ public class InventoryLevel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
@@ -29,16 +31,10 @@ public class InventoryLevel {
     public InventoryLevel() {}
 
     @PrePersist
-    public void prePersist() {
-        this.lastUpdated = LocalDateTime.now();
-    }
-
     @PreUpdate
-    public void preUpdate() {
+    public void updateTimestamp() {
         this.lastUpdated = LocalDateTime.now();
     }
-
-    // ✅ REQUIRED GETTERS / SETTERS
 
     public Long getId() { return id; }
 

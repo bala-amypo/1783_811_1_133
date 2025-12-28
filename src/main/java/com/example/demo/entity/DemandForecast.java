@@ -11,10 +11,12 @@ public class DemandForecast {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
@@ -24,10 +26,6 @@ public class DemandForecast {
     private Integer forecastedDemand;
 
     public DemandForecast() {}
-
-    // ❌ DO NOT throw exceptions in entity lifecycle
-
-    // ✅ GETTERS / SETTERS
 
     public Long getId() { return id; }
 
