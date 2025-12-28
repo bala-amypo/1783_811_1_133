@@ -17,17 +17,22 @@ public class InventoryLevel {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
     private Integer quantity;
 
+    @Column(nullable = false)
     private LocalDateTime lastUpdated;
+
+    // ✅ REQUIRED by JPA & tests
+    public InventoryLevel() {
+    }
 
     @PrePersist
     @PreUpdate
