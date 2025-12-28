@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "stores")
 public class Store {
 
     @Id
@@ -16,6 +17,10 @@ public class Store {
     private String region;
 
     private boolean active = true;
+
+    // ✅ REQUIRED by JPA & tests
+    public Store() {
+    }
 
     public Long getId() {
         return id;

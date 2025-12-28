@@ -4,23 +4,30 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "demand_forecasts")
 public class DemandForecast {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Store store;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product product;
 
+    @Column(nullable = false)
     private LocalDate forecastDate;
 
+    @Column(nullable = false)
     private Integer forecastedDemand;
 
     private Double confidenceScore;
+
+    // ✅ REQUIRED by JPA & tests
+    public DemandForecast() {
+    }
 
     public Long getId() {
         return id;

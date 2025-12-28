@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -18,6 +19,10 @@ public class Product {
     private String category;
 
     private boolean active = true;
+
+    // ✅ REQUIRED by JPA & tests
+    public Product() {
+    }
 
     public Long getId() {
         return id;

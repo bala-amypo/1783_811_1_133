@@ -4,28 +4,37 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "transfer_suggestions")
 public class TransferSuggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Store sourceStore;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Store targetStore;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product product;
 
+    @Column(nullable = false)
     private Integer suggestedQuantity;
 
+    @Column(nullable = false)
     private String reason;
 
+    @Column(nullable = false)
     private String status = "PENDING";
 
+    @Column(nullable = false)
     private LocalDateTime generatedAt;
+
+    // ✅ REQUIRED by JPA & tests
+    public TransferSuggestion() {
+    }
 
     @PrePersist
     public void prePersist() {
@@ -78,6 +87,11 @@ public class TransferSuggestion {
 
     public String getStatus() {
         return status;
+    }
+
+    // ✅ REQUIRED for tests
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDateTime getGeneratedAt() {
