@@ -40,18 +40,14 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
             throw new BadRequestException("Inactive product");
         }
 
-        // ✅ RETURN EXISTING SUGGESTIONS FIRST
-        List<TransferSuggestion> existing =
-                transferSuggestionRepository.findByProduct_Id(productId);
-        if (!existing.isEmpty()) {
-            return existing;
-        }
-
         List<InventoryLevel> inventoryLevels =
                 inventoryLevelRepository.findByProduct_Id(productId);
 
-        if (inventoryLevels.size() < 2) {
-            throw new BadRequestException("Not enough inventory to balance");
+        List<DemandForecast> forecasts =
+                demandForecastRepository.findByProduct_Id(productId);
+
+        if (inventoryLevels.size() < 2 || forecasts.isEmpty()) {
+            return new ArrayList<>();
         }
 
         InventoryLevel overStock = inventoryLevels.get(0);
@@ -70,7 +66,7 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
         suggestion.setSuggestedQuantity(
                 Math.max(1, (overStock.getQuantity() - underStock.getQuantity()) / 2)
         );
-        suggestion.setReason("Auto-balancing based on demand");
+        suggestion.setReason("Auto-balancing based on demand forecast");
 
         transferSuggestionRepository.save(suggestion);
 
