@@ -31,49 +31,48 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
     }
 
     @Override
-    public List<TransferSuggestion> generateSuggestions(Long productId) {
+public List<TransferSuggestion> generateSuggestions(Long productId) {
 
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+    Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        if (!product.isActive()) {
-            throw new BadRequestException("Inactive product");
-        }
-
-        List<InventoryLevel> inventory =
-                inventoryLevelRepository.findByProduct_Id(productId);
-
-        List<DemandForecast> forecasts =
-                demandForecastRepository.findByProduct_Id(productId);
-
-        // Tests allow empty result if insufficient data
-        if (inventory.size() < 2 || forecasts.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        InventoryLevel source = inventory.get(0);
-        InventoryLevel target = inventory.get(1);
-
-        // Ensure source has more stock
-        if (source.getQuantity() <= target.getQuantity()) {
-            InventoryLevel tmp = source;
-            source = target;
-            target = tmp;
-        }
-
-        TransferSuggestion suggestion = new TransferSuggestion();
-        suggestion.setProduct(product);
-        suggestion.setSourceStore(source.getStore());
-        suggestion.setTargetStore(target.getStore());
-        suggestion.setSuggestedQuantity(
-                Math.max(1, (source.getQuantity() - target.getQuantity()) / 2)
-        );
-        suggestion.setReason("Auto-balancing based on demand forecast");
-
-        transferSuggestionRepository.save(suggestion);
-
-        return List.of(suggestion);
+    if (!product.isActive()) {
+        throw new BadRequestException("Inactive product");
     }
+
+    List<InventoryLevel> inventory =
+            inventoryLevelRepository.findByProduct_Id(productId);
+
+    List<DemandForecast> forecasts =
+            demandForecastRepository.findByProduct_Id(productId);
+
+    if (inventory.size() < 2 || forecasts.isEmpty()) {
+        return List.of();
+    }
+
+    InventoryLevel high = inventory.get(0);
+    InventoryLevel low = inventory.get(1);
+
+    if (high.getQuantity() < low.getQuantity()) {
+        InventoryLevel temp = high;
+        high = low;
+        low = temp;
+    }
+
+    TransferSuggestion ts = new TransferSuggestion();
+    ts.setProduct(product);
+    ts.setSourceStore(high.getStore());
+    ts.setTargetStore(low.getStore());
+    ts.setSuggestedQuantity(
+            Math.max(1, (high.getQuantity() - low.getQuantity()) / 2)
+    );
+    ts.setReason("Auto-balancing");
+
+    transferSuggestionRepository.save(ts);
+
+    return List.of(ts);
+}
+
 
     @Override
     public TransferSuggestion getSuggestionById(Long id) {
