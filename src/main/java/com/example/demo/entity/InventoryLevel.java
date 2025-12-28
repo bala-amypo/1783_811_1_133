@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "inventory_levels")
+@Table(
+    name = "inventory_levels",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"store_id", "product_id"})
+)
 public class InventoryLevel {
 
     @Id
@@ -21,8 +24,6 @@ public class InventoryLevel {
     private Integer quantity;
 
     private LocalDateTime lastUpdated;
-
-    public InventoryLevel() {}
 
     @PrePersist
     @PreUpdate

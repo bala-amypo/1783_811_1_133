@@ -10,13 +10,13 @@ public class TransferSuggestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Store sourceStore;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Store targetStore;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Product product;
 
     private Integer suggestedQuantity;
@@ -31,8 +31,6 @@ public class TransferSuggestion {
     public void prePersist() {
         this.generatedAt = LocalDateTime.now();
     }
-
-    // ===== GETTERS & SETTERS =====
 
     public Long getId() {
         return id;
