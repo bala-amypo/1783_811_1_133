@@ -21,16 +21,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(
+                            org.springframework.security.config.http.SessionCreationPolicy.STATELESS
+                    )
+            )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/auth/**",
-                        "/simple-status",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**"
-                ).permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+                    // 🔓 Public endpoints
+                    .requestMatchers(
+                            "/auth/**",
+                            "/simple-status",
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**"
+                    ).permitAll()
+
+                    // 🔐 Protected APIs
+                    .requestMatchers("/api/**").authenticated()
+
+                    // 🔓 Everything else allowed
+                    .anyRequest().permitAll()
             );
 
         http.addFilterBefore(
@@ -40,6 +51,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(
