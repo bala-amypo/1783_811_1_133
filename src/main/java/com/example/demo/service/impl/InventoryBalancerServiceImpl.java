@@ -7,6 +7,7 @@ import com.example.demo.repository.*;
 import com.example.demo.service.InventoryBalancerService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,8 +40,40 @@ public class InventoryBalancerServiceImpl implements InventoryBalancerService {
             throw new BadRequestException("Inactive product");
         }
 
-        // For now: return existing suggestions (tests expect non-empty list)
-        return transferSuggestionRepository.findByProduct_Id(productId);
+        List<InventoryLevel> inventoryLevels =
+                inventoryLevelRepository.findByProduct_Id(productId);
+
+        List<DemandForecast> forecasts =
+                demandForecastRepository.findByProduct_Id(productId);
+
+        List<TransferSuggestion> suggestions = new ArrayList<>();
+
+        if (inventoryLevels.size() < 2 || forecasts.isEmpty()) {
+            return suggestions;
+        }
+
+        InventoryLevel overStock = inventoryLevels.get(0);
+        InventoryLevel underStock = inventoryLevels.get(1);
+
+        if (overStock.getQuantity() <= underStock.getQuantity()) {
+            InventoryLevel temp = overStock;
+            overStock = underStock;
+            underStock = temp;
+        }
+
+        TransferSuggestion suggestion = new TransferSuggestion();
+        suggestion.setProduct(product);
+        suggestion.setSourceStore(overStock.getStore());
+        suggestion.setTargetStore(underStock.getStore());
+        suggestion.setSuggestedQuantity(
+                Math.max(1, (overStock.getQuantity() - underStock.getQuantity()) / 2)
+        );
+        suggestion.setReason("Auto-balancing based on demand forecast");
+
+        transferSuggestionRepository.save(suggestion);
+        suggestions.add(suggestion);
+
+        return suggestions;
     }
 
     @Override
