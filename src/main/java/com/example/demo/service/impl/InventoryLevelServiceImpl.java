@@ -11,6 +11,8 @@ import com.example.demo.service.InventoryLevelService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class InventoryLevelServiceImpl implements InventoryLevelService {
@@ -47,14 +49,15 @@ public class InventoryLevelServiceImpl implements InventoryLevelService {
         Product product = productRepo.findById(inventoryLevel.getProduct().getId())
                 .orElseThrow(() -> new BadRequestException("Product not found"));
 
-        InventoryLevel existing =
-                inventoryRepo.findByStore_IdAndProduct_Id(store.getId(), product.getId());
+        Optional<InventoryLevel> existingOpt =
+        inventoryRepo.findByStore_IdAndProduct_Id(store.getId(), product.getId());
 
-        if (existing != null) {
-            // ✅ UPDATE ONLY quantity
+        if (existingOpt.isPresent()) {
+            InventoryLevel existing = existingOpt.get();
             existing.setQuantity(inventoryLevel.getQuantity());
             return inventoryRepo.save(existing);
         }
+
 
         // ✅ INSERT new row
         inventoryLevel.setStore(store);
