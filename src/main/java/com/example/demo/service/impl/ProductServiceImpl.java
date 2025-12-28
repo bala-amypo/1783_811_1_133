@@ -19,8 +19,19 @@
 
         @Override
         public Product createProduct(Product product) {
+
+            if (productRepository.findBySku(product.getSku()).isPresent()) {
+                throw new BadRequestException("SKU already exists");
+            }
+
+            if (product.getSku().equalsIgnoreCase(product.getName())) {
+                throw new BadRequestException("SKU and name must be different");
+            }
+
+            product.setActive(true);
             return productRepository.save(product);
         }
+
 
         @Override
         public Product getProductById(Long id) {
