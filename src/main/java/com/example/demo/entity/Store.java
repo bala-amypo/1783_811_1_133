@@ -18,7 +18,6 @@ public class Store {
 
     private boolean active = true;
 
-    // ✅ REQUIRED by JPA & tests
     public Store() {
     }
 
